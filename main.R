@@ -19,13 +19,20 @@ colnames(dfSFPrecip) <- c("Year", month.abb, "Annual")
 # what's in the totals column?
 dfSFPrecip[["Annual"]]
 # lots of "M"s in there, and some "T"s in the monthly columns
-# replace those characters with NA
+# I'm not sure what those mean but they're getting in the way
+# of working with the data, so I'll replace those characters with NA
 dfSFPrecip[dfSFPrecip == 'M' | dfSFPrecip == 'T' ] <- NA
 # convert {numeric-looking text values} to actual numeric
 dfSFPrecip[] <- lapply(dfSFPrecip, as.numeric)
 # recalculate "Annual" column, dropping NAs
 dfSFPrecip[["Annual"]] <- rowSums( dfSFPrecip[, month.abb], na.rm = TRUE, )
 
-# that is the end of the ETL process
+# end of the ETL process
 View(dfSFPrecip)
+plot(dfSFPrecip$Year, dfSFPrecip$Annual)
 
+# regress using 'year' as predictor for 'annual' total rainfall ...
+# are we getting more or less rainfall over time?
+lmSFPrecip <- lm(Annual~Year, data = dfSFPrecip )
+summary(lmSFPrecip)
+plot(lmSFPrecip)
