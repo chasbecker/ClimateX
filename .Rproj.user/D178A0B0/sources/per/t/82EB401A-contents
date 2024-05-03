@@ -13,11 +13,11 @@ rm(list=ls())
 # will have to add them below.  By inspection the data is "tab delimited".
 
 dfSFPrecip <- read.delim("data/SanFranciscoPrecip1909toPresent.txt", header = FALSE, sep = "\t")
-# set column names
+# by inspection from website above, set column names
 colnames(dfSFPrecip) <- c("Year", month.abb, "Annual")
 
 # what's in the totals column?
-dfSFPrecip[["Annual"]]
+dfSFPrecip$Annual
 # lots of "M"s in there, and some "T"s in the monthly columns
 # I'm not sure what those mean but they're getting in the way
 # of working with the data, so I'll replace those characters with NA
@@ -25,7 +25,7 @@ dfSFPrecip[dfSFPrecip == 'M' | dfSFPrecip == 'T' ] <- NA
 # convert {numeric-looking text values} to actual numeric
 dfSFPrecip[] <- lapply(dfSFPrecip, as.numeric)
 # recalculate "Annual" column, dropping NAs
-dfSFPrecip[["Annual"]] <- rowSums( dfSFPrecip[, month.abb], na.rm = TRUE, )
+dfSFPrecip$Annual <- rowSums( dfSFPrecip[, month.abb], na.rm = TRUE, )
 
 # end of the ETL process
 View(dfSFPrecip)
@@ -35,4 +35,8 @@ plot(dfSFPrecip$Year, dfSFPrecip$Annual)
 # are we getting more or less rainfall over time?
 lmSFPrecip <- lm(Annual~Year, data = dfSFPrecip )
 summary(lmSFPrecip)
-plot(lmSFPrecip)
+ggSFPrecip <- ggplot( data = dfSFPrecip, aes( x = Year, y = Annual)) +
+  geom_point() +
+  geom_smooth(method=lm)
+ggSFPrecip
+# my work here is done :-)
