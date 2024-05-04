@@ -1,5 +1,6 @@
 # just because I always do....
 library(tidyverse)
+library(stargazer)
 
 # clean up the environment
 rm(list=ls())
@@ -34,7 +35,7 @@ plot(dfSFPrecip$Year, dfSFPrecip$Annual)
 # regress using 'year' as predictor for 'annual' total rainfall ...
 # are we getting more or less rainfall over time?
 lmSFPrecip <- lm(Annual~Year, data = dfSFPrecip )
-summary(lmSFPrecip)
+stargazer(lmSFPrecip, type = "text")
 ggSFPrecip <- ggplot( data = dfSFPrecip, aes( x = Year, y = Annual)) +
   geom_point() +
   geom_smooth(method=lm)
